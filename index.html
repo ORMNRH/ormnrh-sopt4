@@ -30,10 +30,13 @@
       var set = function (t) { try { t ? localStorage.setItem(KEY, t) : localStorage.removeItem(KEY); } catch (e) { /* blocked */ } };
       // returning from Google sign-in: #s=<session>
       var m = /[#&]s=([^&]+)/.exec(location.hash || '');
+      var pendingId = '';
+      var g = /[#&]id_token=([^&]+)/.exec(location.hash || '');
+      if (g) { pendingId = decodeURIComponent(g[1]); try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* ignore */ } }
       if (m) { set(decodeURIComponent(m[1])); try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* ignore */ } }
       window.addEventListener('message', function (e) {
         if (!e.data || !/^https:\/\/[a-z0-9.-]+\.googleusercontent\.com$/.test(e.origin)) return; // app runs 2 frames deep (googleusercontent sandbox)
-        if (e.data.type === 'sopt4-hello') e.source.postMessage({ type: 'sopt4-token', token: get() }, '*');
+        if (e.data.type === 'sopt4-hello') { e.source.postMessage({ type: 'sopt4-token', token: get(), idToken: pendingId }, '*'); pendingId = ''; }
         else if (e.data.type === 'sopt4-token-set') set(String(e.data.token || ''));
         else if (e.data.type === 'sopt4-reload') { var f = document.getElementById('app'); f.src = f.src; }
       });
