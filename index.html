@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#10B981">
+  <title>สพท.4 Report</title>
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #E8F7F2; }
+    iframe { display: block; width: 100%; height: 100%; border: none; }
+  </style>
+</head>
+<body>
+  <!-- หน้านี้แค่ฝัง สพท.4 Report (รันบน Google Apps Script) ไว้ใน iframe เต็มจอ ให้ URL เป็นโดเมนนี้
+       ข้อมูล/Sheet/โค้ดจริงอยู่ที่ Apps Script ทั้งหมด หน้านี้เก็บเฉพาะ session ไว้ใน localStorage ของโดเมนนี้ -->
+  <iframe id="app"
+    src="https://script.google.com/macros/s/AKfycbzfx4nMiVe2aXyXoKVUtRvSQlMNmd0A3i7vBZvdHlS6PpZ1OoIddwUjbASSiKV65rxf/exec"
+    title="สพท.4 Report" allow="clipboard-write"></iframe>
+  <script>
+    (function () {
+      var KEY = 'sopt4.wrap';
+      var get = function () { try { return localStorage.getItem(KEY) || ''; } catch (e) { return ''; } };
+      var set = function (t) { try { t ? localStorage.setItem(KEY, t) : localStorage.removeItem(KEY); } catch (e) { /* blocked */ } };
+      // returning from Google sign-in: #s=<session>
+      var m = /[#&]s=([^&]+)/.exec(location.hash || '');
+      if (m) { set(decodeURIComponent(m[1])); try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* ignore */ } }
+      window.addEventListener('message', function (e) {
+        if (!e.data || !/^https:\/\/[a-z0-9.-]+\.googleusercontent\.com$/.test(e.origin)) return; // app runs 2 frames deep (googleusercontent sandbox)
+        if (e.data.type === 'sopt4-hello') e.source.postMessage({ type: 'sopt4-token', token: get() }, '*');
+        else if (e.data.type === 'sopt4-token-set') set(String(e.data.token || ''));
+      });
+    })();
+  </script>
+</body>
+</html>
