@@ -1,0 +1,16 @@
+{
+  "name": "สพท.4 Report",
+  "short_name": "สพท.4",
+  "description": "รายงานประจำวันหน่วยผ่าตัด ชั้น 4 · โรงพยาบาลมหาราชนครราชสีมา",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#E8F7F2",
+  "theme_color": "#0FA968",
+  "lang": "th",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
